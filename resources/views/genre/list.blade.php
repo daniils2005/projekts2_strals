@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-
+ 
 	<h1>{{ $title }}</h1>
  
 	@if (count($items) > 0)
@@ -10,19 +10,21 @@
 			<thead class="thead-light">
 				<tr>
 					<th>ID</th>
-					<th>Name</th>
+					<th>Genre</th>
+					<th>Description</th>
 					<th>&nbsp;</th>
 				</tr>
 			</thead>
 			<tbody>
-		
-			@foreach($items as $author)
+ 
+			@foreach($items as $genre)
 			<tr>
-				<td>{{ $author->id }}</td>
-				<td>{{ $author->name }}</td>
+				<td>{{ $genre->id }}</td>
+				<td>{{ $genre->genre }}</td>
+				<td>{{ $genre->description }}</td>
 				<td>
-					<a href="/authors/update/{{ $author->id }}" class="btn btn-outline-primary btn-sm">Edit</a>
-					<form action="/authors/delete/{{ $author->id }}" method="post" class="deletionform d-inline">
+					<a href="/genres/update/{{ $genre->id }}" class="btn btn-outline-primary btnsm">Edit</a>
+					<form action="/genres/delete/{{ $genre->id }}" method="post" class="deletionform d-inline">
 						@csrf
 						<button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
 					</form>
@@ -34,11 +36,11 @@
 		</table>
  
 	@else
- 
+		
 		<p>No entries found in database</p>
  
 	@endif
-
-	<a href="/authors/create" class="btn btn-primary">Add new</a>
-
+	
+	<a href="/genres/create" class="btn btn-primary">Add new</a>
+	
 @endsection

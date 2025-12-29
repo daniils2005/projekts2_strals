@@ -2,7 +2,7 @@
 
 function setupDeleteForms() {
 
-	let deleteForms = document.querySelectorAll('form.deletion-form');
+	let deleteForms = document.querySelectorAll('form.deletionform');
  
 	for (let form of deleteForms) {
 		form.addEventListener('submit', function (event) {
