@@ -9,6 +9,7 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use App\Http\Requests\BookRequest;
+use App\Models\Genre;
 
 class BookController extends Controller implements HasMiddleware
 {
@@ -56,6 +57,7 @@ class BookController extends Controller implements HasMiddleware
 	public function create(): View
 	{
 		$authors = Author::orderBy('name', 'asc')->get();
+		$genres = Genre::orderBy('genre', 'asc')->get();
 
 		return view(
 			'book.form',
@@ -63,6 +65,7 @@ class BookController extends Controller implements HasMiddleware
 				'title' => 'Add new book',
 				'book' => new Book(),
 				'authors' => $authors,
+				'genres' => $genres,
 			]
 		);
 	}
@@ -77,13 +80,15 @@ class BookController extends Controller implements HasMiddleware
 	public function update(Book $book): View
 	{
 		$authors = Author::orderBy('name', 'asc')->get();
+		$genres = Genre::orderBy('genre', 'asc')->get();
 		
 		return view(
 			'book.form',
 			[
-				'title' => 'Rediģēt grāmatu',
+				'title' => 'Edit book',
 				'book' => $book,
 				'authors' => $authors,
+				'genres' => $genres
 			]
 		);
 	}
@@ -91,7 +96,7 @@ class BookController extends Controller implements HasMiddleware
 	public function patch(Book $book, BookRequest $request): RedirectResponse
 	{
 		$this->saveBookData($book, $request);
-		return redirect('/books/update/' . $book->id);
+		return redirect('/books');
 	}
 	// delete Book
 	public function delete(Book $book): RedirectResponse
