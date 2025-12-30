@@ -43,13 +43,13 @@ class BookController extends Controller implements HasMiddleware
 	// display all Books
 	public function list(): View
 	{
-		$items = Book::orderBy('name', 'asc')->get();
+		//$items = Book::orderBy('name', 'asc')->get();
 	
 		return view(
 			'book.list',
 			[
 				'title' => 'Books',
-				'items' => $items
+				'items' => Book::all(),
 			]
 		);
 	}

@@ -22,13 +22,13 @@ class AuthorController extends Controller implements HasMiddleware
 	// display all Authors
     public function list(): View
 	{
-		$items = Author::orderBy('name', 'asc')->get();
+		//$items = Author::orderBy('name', 'asc')->get();
 		
 		return view(
 			'author.list',
 			[
 				'title' => 'Authors',
-				'items' => $items,
+				'items' => Author::all(),
 			]
 		);
 	}
