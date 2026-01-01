@@ -32,7 +32,7 @@ class Book extends Model
 			'name' => $this->name,
 			'description' => $this->description,
 			'author' => $this->author->name,
-			'genre' => ($this->genre ? $this->genre->name : ''),
+			'genre' => ($this->genre ? $this->genre->genre : ''),
 			'price' => number_format($this->price, 2),
 			'year' => intval($this->year),
 			'image' => asset('images/' . $this->image),

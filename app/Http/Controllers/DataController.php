@@ -12,6 +12,7 @@ class DataController extends Controller
 	public function getTopBooks(): JsonResponse
 	{
 		$books = Book::where('display', true)
+			->with(['author', 'genre'])
 			->inRandomOrder()
 			->take(3)
 			->get();
@@ -25,6 +26,7 @@ class DataController extends Controller
 				'id' => $book->id,
 				'display' => true,
 			])
+			->with(['author', 'genre'])
 			->firstOrFail();
 
 		return response()->json($selectedBook);
@@ -33,6 +35,7 @@ class DataController extends Controller
 	public function getRelatedBooks(Book $book): JsonResponse
 	{
 		$books = Book::where('display', true)
+			->with(['author', 'genre'])
 			->where('id', '<>', $book->id)
 			->inRandomOrder()
 			->take(3)
