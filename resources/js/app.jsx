@@ -81,8 +81,8 @@ const relatedBooks = [
 // Header and Footer components - structural components without processing or data
 function Header() {
 	return (
-		<header className="bg-green-500 mb-8 py-2 sticky top-0">
-			<div className="px-2 py-2 font-serif text-green-50 text-xl leading-6
+		<header className="bg-green-500 mb-8 py-5 sticky top-0">
+			<div className="px-2 py-2 font-serif text-green-50 text-4xl leading-6
 md:container md:mx-auto">
 				Project 2
 			</div>
@@ -93,7 +93,7 @@ md:container md:mx-auto">
 function Footer() {
 	return (
 		<footer className="bg-neutral-300 mt-8">
-			<div className="py-8 md:container md:mx-auto px-2">
+			<div className="py-8 md:container md:mx-auto px-2 text-xl">
 				D.D.Strals, 2025
 			</div>
 		</footer>
@@ -249,7 +249,7 @@ selectedBookID);
 			{!isLoading && !error && <>
 				<div className="rounded-lg flex flex-wrap md:flex-row">
 					<div className="order-2 md:order-1 md:pt-12 md:basis-1/2">
-						<h1 className="text-3xl leading-8 font-light text-neutral-900">
+						<h1 className="text-3xl leading-8 font-bold text-neutral-900">
 							{selectedBook.name}
 						</h1>
 						<p className="text-xl leading-7 font-light text-neutral-900 mb-2">
@@ -258,25 +258,25 @@ selectedBookID);
 						<p className="text-xl leading-7 font-light text-neutral-900 mb-4">
 							{selectedBook.description}
 						</p>
-						<dl className="mb-4 md:flex md:flex-wrap md:flex-row">
-							<dt className="font-bold md:basis-1/4">
+						<dl className="mb-10 md:flex md:flex-wrap md:flex-row mt-10">
+							<dt className="font-bold md:basis-1/4 text-2xl opacity-70">
 								Published
 							</dt>
-							<dd className="mb-2 md:basis-3/4">
+							<dd className="mb-2 md:basis-3/4 text-2xl">
 								{selectedBook.year}
 							</dd>
 					
-							<dt className="font-bold md:basis-1/4">
+							<dt className="font-bold md:basis-1/4 text-2xl opacity-70">
 								Price
 							</dt>
-							<dd className="mb-2 md:basis-3/4">
-								&euro; {selectedBook.price}
+							<dd className="mb-2 md:basis-3/4 text-2xl">
+								&euro;{selectedBook.price}
 							</dd>
 					
-							<dt className="font-bold md:basis-1/4">
+							<dt className="font-bold md:basis-1/4 text-2xl opacity-70">
 								Genre
 							</dt>
-							<dd className="mb-2 md:basis-3/4">
+							<dd className="mb-2 md:basis-3/4 text-2xl">
 								{selectedBook.genre}
 							</dd>
 						</dl>
@@ -285,7 +285,7 @@ selectedBookID);
 						<img
 							src={selectedBook.image}
 							alt={selectedBook.name}
-							className="p-1 rounded-md border border-neutral-200 mx-auto" />
+							className="p-1 rounded-md border border-neutral-200 mx-auto h-150 object-contain" />
 					</div>
 				</div>
 				<div className="mb-12 flex flex-wrap">
@@ -308,25 +308,67 @@ function GoBackBtn({ handleGoingBack }) {
 
 // Related Book Section
 function RelatedBookSection({ selectedBookID, handleBookSelection }) {
+	const [relatedBooks, setRelatedBooks] = useState([]);
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState(null);
+
+	useEffect(function () {
+		async function fetchRelatedBooks() {
+			try {
+				setIsLoading(true);
+				setError(null);
+
+				const response = await fetch(
+					'http://project2/data/get-related-books/' + selectedBookID
+				);
+
+				if (!response.ok) {
+					throw new Error(
+						"Error while loading related books. Please reload page!"
+					);
+				}
+
+				const data = await response.json();
+				console.log('related books fetched', data);
+				setRelatedBooks(data);
+			} catch (error) {
+				setError(error.message);
+			} finally {
+				setIsLoading(false);
+			}
+		}
+
+		if (selectedBookID) fetchRelatedBooks();
+	}, [selectedBookID]);
+
 	return (
 		<>
-			<div className="flex flex-wrap">
-				<h2 className="text-3xl leading-8 font-light text-neutral-900 mb4">
-					Similar books
-				</h2>
-			</div>
-			<div className="flex flex-wrap md:flex-row md:space-x-4 md:flex-nowrap">
-				{relatedBooks.map( book => (
-					<RelatedBookView
-						book={book}
-						key={book.id}
-						handleBookSelection={handleBookSelection}
-					/>
-				))}
-			</div>
+			{isLoading && <Loader />}
+			{error && <ErrorMessage msg={error} />}
+
+			{!isLoading && !error && relatedBooks.length > 0 && (
+				<>
+					<div className="flex flex-wrap">
+						<h2 className="text-3xl leading-8 font-light text-neutral-900 mb-4">
+							Similar books
+						</h2>
+					</div>
+
+					<div className="flex flex-wrap md:flex-row md:space-x-4 md:flex-nowrap">
+						{relatedBooks.map(book => (
+							<RelatedBookView
+								key={book.id}
+								book={book}
+								handleBookSelection={handleBookSelection}
+							/>
+						))}
+					</div>
+				</>
+			)}
 		</>
-	)
+	);
 }
+
 
 // Related Book View
 function RelatedBookView({ book, handleBookSelection }) {
@@ -353,7 +395,7 @@ function RelatedBookView({ book, handleBookSelection }) {
 function Loader() {
 	return (
 		<div className="my-12 px-2 md:container md:mx-auto text-center clear-both">
-			<div className="loader"></div> // GIF image here, if you’re not using CSS
+			<div className="loader"></div>
 		</div>
 	)
 }
